@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { AlertController, ToastController, ActionSheetController } from '@ionic/angular';
+import { AlertController, ToastController, ActionSheetController, Platform } from '@ionic/angular';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,8 @@ export class HomePage {
   constructor(
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    private localNotification: LocalNotifications,
   ) {
     let tasksJson = localStorage.getItem('taskDb');
     if(tasksJson != null){
@@ -41,6 +43,12 @@ export class HomePage {
         }, {
           text: 'Adicionar',
           handler: (form) => {
+            this.localNotification.schedule({
+              id: 1,
+              title: 'Nova Tarefa!',
+              text: form.taskToDo,
+              data: { mydata: 'O que acha de completar logo rsrs ?'}
+            });
             this.add(form.taskToDo);
           }
         }
@@ -92,5 +100,8 @@ export class HomePage {
   delete(task: any){
     this.tasks = this.tasks.filter(taskArray => task != taskArray);
     this.upadateLocalStorage();
+  }
+  sheduleNotification(){
+    
   }
 }
